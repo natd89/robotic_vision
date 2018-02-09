@@ -93,8 +93,10 @@ if __name__=='__main__':
     k = 0
     x_left = []
     x_right = []
-    x_mid_left = []
-    x_mid_right = []
+    x_mid_left_y = []
+    x_mid_right_y = []
+    x_mid_left_x = []
+    x_mid_right_x = []
 
     while not done:
         
@@ -142,12 +144,14 @@ if __name__=='__main__':
                     elif p0[i,0,0]>340 and p0[i,0,1]>256-200/2 and p0[i,0,1]<256+200/2:
                         x_right.append(p1[i,0,0] - p0[i,0,0])
                     elif p0[i,0,0]>256-128 and p0[i,0,0]<256 and p0[i,0,1]>256-128 and p0[i,0,1]<256+128:
-                        x_mid_left.append(p1[i,0,1] - p0[i,0,1])
+                        x_mid_left_y.append(p1[i,0,1] - p0[i,0,1])
+                        x_mid_left_x.append(p1[i,0,0] - p0[i,0,0])
                     elif p0[i,0,0]>256 and p0[i,0,0]<256+128 and p0[i,0,1]>256-128 and p0[i,0,1]<256+128:
-                        x_mid_right.append(p1[i,0,1] - p0[i,0,1])
+                        x_mid_right_y.append(p1[i,0,1] - p0[i,0,1])
+                        x_mid_right_x.append(p1[i,0,0] - p0[i,0,0])
 
-                sum_mid_x = np.sum(np.abs(x_mid_left)+np.abs(x_mid_right))
-                # print(sum_mid_x)
+                sum_mid_x = np.sum(np.abs(x_mid_left_y)+np.abs(x_mid_right_y))
+
                 sum_x = np.sum(np.average(x_left)+np.average(x_right))
                 
                 if flag==3:
@@ -158,17 +162,18 @@ if __name__=='__main__':
                     if command[0]<-10*np.pi/180.:
                         command[0] = -10*np.pi/180.
 
-                    if sum_mid_x > 70:
+                    if sum_mid_x > 80:
                         print('watch out!!')
-                        print(np.sum(np.abs(x_mid_left)) - np.sum(np.abs(x_mid_right)))
-                        if (np.sum(np.abs(x_mid_left)) - np.sum(np.abs(x_mid_right))) > 20:
-                            command[2] = kp_psi*((psi_c-.2)-psi)
-                            command[1] = .1
-                        elif (np.sum(np.abs(x_mid_left)) - np.sum(np.abs(x_mid_right))) < -20:
-                            command[2] = kp_psi*((psi_c+2)-psi)
-                            command[1] = .1
-                        else:
-                            command[1] = -.2
+                        if (np.sum(np.abs(x_mid_left_y)) - np.sum(np.abs(x_mid_right_y))) > 20:
+                            command[2] = kp_psi*((psi_c-.3)-psi)
+#                            command[1] = 0
+                        elif (np.sum(np.abs(x_mid_left_y)) - np.sum(np.abs(x_mid_right_y))) < -20:
+                            command[2] = kp_psi*((psi_c+.3)-psi)
+#                            command[1] = 0
+                        # elif (np.sum(np.abs(x_mid_left_x)) + np.sum(np.abs(x_mid_right_x)))>100:
+                        #     print('collision immenent!')
+                        #     command[1] = 0.2
+
                     else:
                         command[2] = kp_psi*(psi_c-psi)
                         command[1] = -0.2
@@ -195,8 +200,11 @@ if __name__=='__main__':
 
             x_left = []
             x_right = []
-            x_mid_left = []
-            x_mid_right = []
+            x_mid_left_y = []
+            x_mid_right_y = []
+            x_mid_left_x = []
+            x_mid_right_x = []
+
             k+=1
     cv2.destroyAllWindows()
 
