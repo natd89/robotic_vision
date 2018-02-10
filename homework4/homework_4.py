@@ -17,7 +17,11 @@ def get_command(command,done,flag):
         if event.type == pygame.KEYDOWN:
             # Figure out if it was an arrow key. If so
                 # adjust speed.
-            if event.key == pygame.K_s:
+            if event.key == pygame.K_e:
+                command = command + np.array([0,0,0,1])
+            elif event.key == pygame.K_d:
+                command = command + np.array([0,0,0,-1])
+            elif event.key == pygame.K_s:
                 command = command + np.array([0,0,1,0])
             elif event.key == pygame.K_f:
                 command = command + np.array([0,0,-1,0])
@@ -84,11 +88,11 @@ if __name__=='__main__':
     # Create a mask image for drawing purposes
     mask = np.zeros_like(pixels_prev)
     
-    flag = 0
+    flag = 1
     h_c = 4
     psi_c = .9
     psi = 0
-    kp_psi = 5
+    kp_psi = 2
     kp_theta = 0.01
     k = 0
     x_left = []
@@ -100,7 +104,7 @@ if __name__=='__main__':
 
     while not done:
         
-        if flag==0:
+        if flag==1:
             state, reward, terminal, _ = env.step(command)           
             location = state[Sensors.LOCATION_SENSOR]
             print('setting height to hc...')
@@ -115,6 +119,7 @@ if __name__=='__main__':
                 psi = np.arcsin(rotation[1][0]/np.cos(theta))
                 command[2] = kp_psi*(psi_c-psi)
             flag = 2
+            print('flag = ', flag)
 
         elif flag == 2 or flag == 3:
             
@@ -163,17 +168,20 @@ if __name__=='__main__':
                         command[0] = -10*np.pi/180.
 
                     if sum_mid_x > 80:
-                        print('watch out!!')
+ 
                         if (np.sum(np.abs(x_mid_left_y)) - np.sum(np.abs(x_mid_right_y))) > 20:
                             command[2] = kp_psi*((psi_c-.3)-psi)
-#                            command[1] = 0
+                            # command[1] = -0.1
                         elif (np.sum(np.abs(x_mid_left_y)) - np.sum(np.abs(x_mid_right_y))) < -20:
                             command[2] = kp_psi*((psi_c+.3)-psi)
-#                            command[1] = 0
-                        # elif (np.sum(np.abs(x_mid_left_x)) + np.sum(np.abs(x_mid_right_x)))>100:
-                        #     print('collision immenent!')
-                        #     command[1] = 0.2
-
+                            # command[1] = -0.1
+                        elif (np.sum(np.abs(x_mid_left_y)) + np.sum(np.abs(x_mid_right_y)))>100 and (np.sum(np.abs(x_mid_left_x)) + np.sum(np.abs(x_mid_right_x)))>100:
+                            # print('collision immenent!')
+                            command[1] = 1.2
+                            flag = 4
+                            print('flag = ', flag)
+                            cnt = 0
+                            check = False
                     else:
                         command[2] = kp_psi*(psi_c-psi)
                         command[1] = -0.2
@@ -197,15 +205,34 @@ if __name__=='__main__':
                 mask = np.zeros_like(pixels_cur)
                 
                 gray_prev = deepcopy(gray_cur)
-
+        
             x_left = []
             x_right = []
             x_mid_left_y = []
             x_mid_right_y = []
             x_mid_left_x = []
             x_mid_right_x = []
-
             k+=1
+
+        if flag == 4:
+            if command[1] > 0:
+                if cnt%4==0:
+                    command[1] = 1 - cnt/300.0*1 
+                    state, reward, terminal, _ = env.step(command)
+                cnt += 1
+                if command[1]==0:
+                    check = True
+                    print('check = ',check)
+                    cnt = 0
+            if check==True:
+                if cnt%4==0:
+                    command[1] = -.7 + cnt/100.0*.7
+                    state, reward, terminal, _ = env.step(command)
+                cnt += 1
+                if command[1] == 0:
+                    flag = 2
+                    print('flag = ', flag)
+
     cv2.destroyAllWindows()
 
 
