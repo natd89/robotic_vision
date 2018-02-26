@@ -12,8 +12,8 @@ def select_roi(image):
 
 if __name__=='__main__':
 
-    cap = cv2.VideoCapture('mv2_001.avi')
-    # cap = cv2.VideoCapture(0)
+    # cap = cv2.VideoCapture('mv2_001.avi')
+    cap = cv2.VideoCapture(0)
 
     ret, im = cap.read()
     roi = select_roi(im)
@@ -59,7 +59,9 @@ if __name__=='__main__':
         ret, im_new = cap.read()
         new_gray = cv2.cvtColor(im_new, cv2.COLOR_BGR2GRAY)
         p_new, st, err = cv2.calcOpticalFlowPyrLK(old_gray, new_gray, p, None, **lk_params)
-        
+        # pause()
+        # p_correct = [p_new[0,0,0], p_new[0,0,1]]
+
         p_predict = kalman.predict()
         p_correct = kalman.correct(np.array([[p_new[0,0,0]],[p_new[0,0,1]]],np.float32))
 
