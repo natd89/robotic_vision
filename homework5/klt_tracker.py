@@ -12,8 +12,8 @@ def select_roi(image):
 
 if __name__=='__main__':
 
-    # cap = cv2.VideoCapture('mv2_001.avi')
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture('mv2_001.avi')
+    # cap = cv2.VideoCapture(0)
 
     ret, im = cap.read()
     roi = select_roi(im)

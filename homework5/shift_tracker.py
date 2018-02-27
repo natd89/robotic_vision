@@ -3,7 +3,7 @@ from pdb import set_trace as pause
 from scipy.stats import mode
 import cv2
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('mv2_001.avi')
 # take first frame of the video
 ret,frame = cap.read()
 # setup initial location of window
