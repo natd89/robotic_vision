@@ -166,13 +166,13 @@ if __name__=='__main__':
 
             # update grid using 4D points
             for j in range(len(points_4D[0])):
-                if (int(points_4D[0,j]/points_4D[3,j])+400)<799 and (int(points_4D[1,j]/points_4D[3,j])+400)<799:
-                    if (int(points_4D[0,j]/points_4D[3,j])+400)>0 and (int(points_4D[1,j]/points_4D[3,j])+400)>0:
+                if (int(points_4D[0,j]/points_4D[3,j])+int(location_old[0])+400)<799 and (int(points_4D[1,j]/points_4D[3,j])+int(location_old[1])+400)<799:
+                    if (int(points_4D[0,j]/points_4D[3,j])+int(location_old[0])+400)>0 and (int(points_4D[1,j]/points_4D[3,j])+int(location_old[1])+400)>0:
                         if np.abs(points_4D[2,j]/points_4D[3,j])>17:
-                            grid_mask[int(points_4D[0,j]/points_4D[3,j])+int(location_new[0])+400,int(points_4D[1,j]/points_4D[3,j])+int(location_new[1])+400]= 0 
+                            grid_mask[int(points_4D[0,j]/points_4D[3,j])+int(location_old[0])+400,int(points_4D[1,j]/points_4D[3,j])+int(location_old[1])+400]= 0 
                             # print([int(points_4D[0,j]/points_4D[3,j])+400,int(points_4D[1,j]/points_4D[3,j])+400])
-                            if grid_mask[int(points_4D[0,j]/points_4D[3,j])+400,int(points_4D[1,j]/points_4D[3,j])+400]<0:
-                                grid_mask[int(points_4D[0,j]/points_4D[3,j])+400,int(points_4D[1,j]/points_4D[3,j])+400]=0
+                            # if grid_mask[int(points_4D[0,j]/points_4D[3,j])+400,int(points_4D[1,j]/points_4D[3,j])+400]<0:
+                            #     grid_mask[int(points_4D[0,j]/points_4D[3,j])+400,int(points_4D[1,j]/points_4D[3,j])+400]=0
 
             p_old = p_new # cv2.goodFeaturesToTrack(gray_new, mask=None, **feature_params)
             gray_old = gray_new
